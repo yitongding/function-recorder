@@ -1,3 +1,8 @@
 {
-  "extends": "tslint:recommended"
+  "extends": "tslint:recommended",
+  "rules": {
+    "ban-types": false,
+    "only-arrow-functions": false,
+    "no-angle-bracket-type-assertion": false,
+  }
 }
