@@ -28,8 +28,7 @@ export class AsyncRecorder extends Recorder implements IRecorder {
   private recordify<T extends Function>(srcFunc: T): T {
     const func = async (...args: any[]) => {
       const result = await srcFunc(...args);
-      const rcode = await this.record(args, result);
-      console.log(rcode);
+      await this.record(args, result);
       return result;
     };
     return <any>func;
