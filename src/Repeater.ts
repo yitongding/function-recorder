@@ -3,23 +3,23 @@ import { IStore } from "./Store";
 import { IPathFunc } from "./types";
 import { md5HashFilename } from "./utils";
 
-export interface IRecorderOptions {
+export interface IRepeaterOptions {
   rootPath: string;
   store: IStore;
   pathFunc?: IPathFunc;
 }
 
-export interface IRecorder {
+export interface IRepeater {
   decorate: MethodDecorator;
   wrap<T extends Function>(srcFunc: T): T;
 }
 
-export abstract class Recorder implements IRecorder {
+export abstract class Repeater implements IRepeater {
   protected pathFunc: IPathFunc;
   protected rootPath: string;
   protected store: IStore;
 
-  constructor(options: IRecorderOptions) {
+  constructor(options: IRepeaterOptions) {
     this.rootPath = options.rootPath;
     this.store = options.store;
 

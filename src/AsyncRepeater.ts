@@ -1,8 +1,8 @@
-import { IRecorder, Recorder } from "./Recorder";
+import { IRepeater, Repeater } from "./Repeater";
 
-export class AsyncRecorder extends Recorder implements IRecorder {
+export class AsyncRepeater extends Repeater implements IRepeater {
   public wrap<T extends Function>(srcFunc: T): T {
-    return this.recordify(srcFunc);
+    return this.repeatify(srcFunc);
   }
 
   public decorate(
@@ -20,22 +20,25 @@ export class AsyncRecorder extends Recorder implements IRecorder {
 
     const originalMethod = descriptor.value;
 
-    descriptor.value = this.recordify(originalMethod);
+    descriptor.value = this.repeatify(originalMethod);
 
     return descriptor;
   }
 
-  private recordify<T extends Function>(srcFunc: T): T {
+  private repeatify<T extends Function>(srcFunc: T): T {
     const func = async (...args: any[]) => {
-      const result = await srcFunc(...args);
-      await this.record(args, result);
-      return result;
+      try {
+        const result = await this.repeat(args);
+        return result;
+      } catch (err) {
+        return await srcFunc(...args);
+      }
     };
     return <any>func;
   }
 
-  private async record(args: any[], data: any): Promise<string> {
+  private async repeat(args: any[]): Promise<any> {
     const key = this.getStoreKey(args);
-    return await this.store.save(this.rootPath, key, data);
+    return await this.store.get(this.rootPath, key);
   }
 }

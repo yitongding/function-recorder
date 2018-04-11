@@ -5,6 +5,7 @@ import * as util from "util";
 import { IStore, Store } from "./Store";
 
 const fs = {
+  readFile: util.promisify(fsNode.readFile),
   stat: util.promisify(fsNode.stat),
   writeFile: util.promisify(fsNode.writeFile)
 };
@@ -14,6 +15,7 @@ const mkdirp = util.promisify(mkdirpOrg);
 export class FileStore extends Store implements IStore {
   private encoder = JSON.stringify;
   private decoder = JSON.parse;
+  private encoding = "utf8";
 
   constructor() {
     super();
@@ -41,6 +43,12 @@ export class FileStore extends Store implements IStore {
     } catch (err) {
       return false;
     }
+  }
+
+  public async get(rootDir: string, filename: string): Promise<any> {
+    const fullPath = this.getFullPath(rootDir, filename);
+    const data = await this.readFromFile(fullPath);
+    return this.decoder(data);
   }
 
   private getFullPath(rootDir: string, filePath: string): string {
@@ -73,5 +81,9 @@ export class FileStore extends Store implements IStore {
 
   private async writeToFile(fullPath: string, data: any) {
     await fs.writeFile(fullPath, this.encoder(data));
+  }
+
+  private async readFromFile(fullPath: string): Promise<string> {
+    return await fs.readFile(fullPath, this.encoding);
   }
 }

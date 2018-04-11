@@ -5,6 +5,8 @@
   "main": "build/index.js",
   "scripts": {
     "build": "tsc",
+    "lint": "tslint -p tsconfig.json",
+    "precommit": "lint-staged",
     "test": "jest"
   },
   "keywords": [
@@ -17,10 +19,13 @@
     "@types/jest": "^22.2.2",
     "@types/mkdirp": "^0.5.2",
     "@types/node": "^9.6.2",
+    "husky": "^0.14.3",
     "jest": "^22.4.3",
+    "lint-staged": "^7.0.4",
     "prettier": "^1.11.1",
     "ts-jest": "^22.4.2",
     "tslint": "^5.9.1",
+    "tslint-config-prettier": "^1.10.0",
     "typescript": "^2.8.1"
   },
   "dependencies": {
@@ -35,5 +40,8 @@
       "js",
       "ts"
     ]
+  },
+  "lint-staged": {
+    "*.{ts}": ["prettier --write", "npm run lint", "git add"]
   }
 }
